@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "gatcha-creator": {
+    "gatcha-creator-ui": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -17,7 +17,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/gatcha-creator",
+            "outputPath": "dist/gatcha-creator-ui",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -72,18 +72,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "gatcha-creator:build"
+            "browserTarget": "gatcha-creator-ui:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "gatcha-creator:build:production"
+              "browserTarget": "gatcha-creator-ui:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "gatcha-creator:build"
+            "browserTarget": "gatcha-creator-ui:build"
           }
         },
         "test": {
@@ -120,15 +120,15 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "gatcha-creator:serve"
+            "devServerTarget": "gatcha-creator-ui:serve"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "gatcha-creator:serve:production"
+              "devServerTarget": "gatcha-creator-ui:serve:production"
             }
           }
         }
       }
     }},
-  "defaultProject": "gatcha-creator"
+  "defaultProject": "gatcha-creator-ui"
 }

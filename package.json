@@ -1,5 +1,5 @@
 {
-  "name": "gatcha-creator",
+  "name": "gatcha-creator-ui",
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
