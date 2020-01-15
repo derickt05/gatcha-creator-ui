@@ -1,7 +1,7 @@
 import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { ImageCroppedEvent } from 'ngx-image-cropper';
 import { GatchaTemplateService } from '../gatcha-template.service';
-import * as html2canvas from "html2canvas";
+import html2canvas from "html2canvas";
 
 @Component({
   selector: 'app-image-selector',
@@ -11,11 +11,13 @@ import * as html2canvas from "html2canvas";
 export class ImageSelectorComponent implements OnInit {
 
   // Gatcha Template properties
-  availableTemplates: Object;
+  availableTemplates: any;
   currentTemplate: Object;
 
   // html2canvas properties
-  // @ViewChild('screen') screen: ElementRef;
+  @ViewChild('screen', {static: false}) screen: ElementRef;
+  @ViewChild('canvas', {static: false}) canvas: ElementRef;
+  @ViewChild('downloadLink', {static: false}) downloadLink: ElementRef;
 
   // ngx-image-cropper properties
   imageChangedEvent: any = '';
@@ -39,16 +41,14 @@ export class ImageSelectorComponent implements OnInit {
   }
 
   // html2canvas image download
-  /*
   downloadImage(){
     html2canvas(this.screen.nativeElement).then(canvas => {
       this.canvas.nativeElement.src = canvas.toDataURL();
       this.downloadLink.nativeElement.href = canvas.toDataURL('image/png');
-      this.downloadLink.nativeElement.download = 'marble-diagram.png';
+      this.downloadLink.nativeElement.download = 'rendered-image.png';
       this.downloadLink.nativeElement.click();
     });
   }
-  */
 
   constructor(private _gatchaTemplateService: GatchaTemplateService) { }
 

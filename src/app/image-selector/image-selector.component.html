@@ -20,7 +20,8 @@
                 <a class="nav-link">{{ gatchaTemplate.value['title'] }}</a>
             </li>
         </ul>
-        <div #renderedImage class="png-container" [ngStyle]= "{
+
+        <div #screen class="png-container" [ngStyle]= "{
             'background-image': currentTemplate['background_url'],
             'background-repeat': 'no-repeat',
             'width': currentTemplate['width'] + 'px'
@@ -28,7 +29,12 @@
             <img [src]="croppedImage" class="output-image" />
             <img [src]="currentTemplate['template_url']" class="template-image" />
         </div>
-        <button #downloadRender>Download</button>
+
+        <button (click)="downloadImage()">Download</button>
+
+        <div id="render-download">
+            <img #canvas>
+            <a #downloadLink></a>
+        </div>
     </div>
 </div>
-
