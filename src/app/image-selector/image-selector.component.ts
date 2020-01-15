@@ -15,7 +15,7 @@ export class ImageSelectorComponent implements OnInit {
   currentTemplate: Object;
 
   // html2canvas properties
-  @ViewChild('screen') screen: ElementRef;
+  // @ViewChild('screen') screen: ElementRef;
 
   // ngx-image-cropper properties
   imageChangedEvent: any = '';
@@ -39,6 +39,7 @@ export class ImageSelectorComponent implements OnInit {
   }
 
   // html2canvas image download
+  /*
   downloadImage(){
     html2canvas(this.screen.nativeElement).then(canvas => {
       this.canvas.nativeElement.src = canvas.toDataURL();
@@ -47,6 +48,7 @@ export class ImageSelectorComponent implements OnInit {
       this.downloadLink.nativeElement.click();
     });
   }
+  */
 
   constructor(private _gatchaTemplateService: GatchaTemplateService) { }
 
