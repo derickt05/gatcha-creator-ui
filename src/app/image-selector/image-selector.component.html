@@ -15,6 +15,9 @@
         </ul>
         <div class="card-body tab-content">
             <input type="file" (change)="fileChangeEvent($event)" />
+            <sf-form [schema]="currentTemplate['schema']" [(model)]="currentTemplate['model']" (onChange)="triggerRender()"></sf-form>
+            <p>Model Sanity Check</p>
+            <pre>{{currentTemplate['model']|json}}</pre>
         </div>
     </div>
 </div>

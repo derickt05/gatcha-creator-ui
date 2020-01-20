@@ -74,7 +74,21 @@ export class ImageSelectorComponent implements OnInit {
   drawCanvas () {
     this.images.forEach(image => {
       this.ctx.drawImage(image, 0, 0, this.currentTemplate['width'], this.currentTemplate['height'])
+      this.ctx.font = "30px Helvetica";
+      this.ctx.fillStyle = "#FFFFFF";
+      if (this.currentTemplate['title'] == 'Heroes') {
+        this.ctx.fillText(this.currentTemplate['model']['name'], 25, 450);
+        this.ctx.fillText(this.currentTemplate['model']['title'], 50, 505);
+      } else {
+        this.ctx.fillText(this.currentTemplate['model']['name'], 15, 800);
+        this.ctx.fillText(this.currentTemplate['model']['title'], 50, 830);
+      }
     });
+  }
+
+  triggerRender() {
+    this.loadSources();
+    this.loadImages(() => this.drawCanvas());
   }
 
   downloadImage() {
@@ -83,8 +97,7 @@ export class ImageSelectorComponent implements OnInit {
 
   changeTemplate(key) {
     this.currentTemplate = this.availableTemplates[key];
-    this.loadSources();
-    this.loadImages(() => this.drawCanvas());
+    this.triggerRender();
   }
 
   // Constructors/Initializers
@@ -98,16 +111,6 @@ export class ImageSelectorComponent implements OnInit {
   ngAfterViewInit() {
     this.ctx = this.heroCanvas.nativeElement.getContext('2d');
     // Load the canvas with the foreground and background even without an uploaded image.
-    this.loadSources();
-    this.loadImages(() => this.drawCanvas());
+    this.triggerRender();
   }
-
-  getRatio() {
-    return "9/16";
-  }
-
-  getWidth() {
-    return "720";
-  }
-
 }

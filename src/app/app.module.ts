@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 
 // npm custom installations //
 import { ImageCropperModule } from 'ngx-image-cropper';
+import { SchemaFormModule, WidgetRegistry, DefaultWidgetRegistry } from "ngx-schema-form";
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -20,9 +21,10 @@ import { HomeComponent } from './home/home.component';
   imports: [
     BrowserModule,
     AppRoutingModule,
-    ImageCropperModule
+    ImageCropperModule,
+    SchemaFormModule.forRoot(),
   ],
-  providers: [],
+  providers: [{provide: WidgetRegistry, useClass: DefaultWidgetRegistry}],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

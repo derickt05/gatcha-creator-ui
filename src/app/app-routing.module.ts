@@ -5,8 +5,8 @@ import { HomeComponent } from './home/home.component';
 import { CreatorComponent } from './creator/creator.component';
 
 const routes: Routes = [
-  { path: '', component: HomeComponent },
-  { path: 'create', component: CreatorComponent }
+  { path: '', component: CreatorComponent },
+  { path: 'home', component: HomeComponent }
 ];
 
 @NgModule({
