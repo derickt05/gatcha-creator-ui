@@ -1,15 +1,21 @@
-<header>
-  <div>
-    <a href="#" routerLink="/" class="logo">Gatcha Creator</a>
-    <nav>
-      <ul>
-        <li><a href="#" routerLink="/">Home</a></li>
-        <li><a href="#" routerLink="/create">Create your Own</a></li>
-      </ul>
-    </nav>
+<nav class="navbar navbar-expand-md navbar-dark bg-dark">
+  <div class="container">
+    <a class="navbar-brand" href="#" routerLink="/" class="logo">Gatcha Creator</a>
+    <!-- This is used for mobile? -->
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <!-- End -->
+    <div class="collapse navbar-collapse">
+      <div class="navbar-nav">
+        <!-- TODO: Add active class-->
+        <a class="nav-item nav-link #" href="#" routerLink="/">Home</a>
+        <a class="nav-item nav-link #" href="#" routerLink="/create">Hero Creator</a>
+      </div>
+    </div>
   </div>
-</header>
+</nav>
 
-<div class="containter">
+<div class="container">
   <router-outlet></router-outlet>
 </div>

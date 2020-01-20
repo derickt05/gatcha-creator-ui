@@ -1,9 +1,29 @@
-<div class="row">
-    <div class="col-7">
+<div class="row mt-2 justify-content-center">
+    <div class="card col-auto hero-canvas-container p-o mb-2 border-0">
+        <!--
+            width and height set inline to prevent blurring canvas behavior
+            https://stackoverflow.com/questions/17854336/html-blurry-canvas-images/17854337#17854337
+        -->
+        <canvas #heroCanvas [width]="currentTemplate['width']" [height]="currentTemplate['height']">
+        </canvas>
+    </div>
+    <div class="card col mb-2 p-0">
+        <ul class="nav nav-tabs">
+            <li *ngFor="let gatchaTemplate of availableTemplates | keyvalue" class="nav-item">
+                <a class="nav-link" [ngClass]="{active: gatchaTemplate.value['title'] == currentTemplate['title']}" (click)="changeTemplate(gatchaTemplate.key)" [routerLink]="">{{ gatchaTemplate.value['title'] }}</a>
+            </li>
+        </ul>
+        <div class="card-body tab-content">
+            <input type="file" (change)="fileChangeEvent($event)" />
+        </div>
+    </div>
+</div>
+<div class="row mt-2 justify-content-center">
+    <div class="col-12">
         <image-cropper
         [maintainAspectRatio]="true"
-        [aspectRatio]=".71 / 1"
-        [resizeToWidth]=512
+        [aspectRatio]="9/16"
+        [resizeToWidth]="720"
         format="png"
         [imageChangedEvent]="imageChangedEvent"
         (imageCropped)="imageCropped($event)"
@@ -11,30 +31,5 @@
         (cropperReady)="cropperReady()"
         (loadImageFailed)="loadImageFailed()"
     ></image-cropper>
-    </div>
-    
-    <div class="col-5">
-        <input type="file" (change)="fileChangeEvent($event)" />
-        <ul class="nav nav-tabs">
-            <li *ngFor="let gatchaTemplate of availableTemplates | keyvalue" class="nav item">
-                <a class="nav-link">{{ gatchaTemplate.value['title'] }}</a>
-            </li>
-        </ul>
-
-        <div #screen class="png-container" [ngStyle]= "{
-            'background-image': currentTemplate['background_url'],
-            'background-repeat': 'no-repeat',
-            'width': currentTemplate['width'] + 'px'
-        }">
-            <img [src]="croppedImage" class="output-image" />
-            <img [src]="currentTemplate['template_url']" class="template-image" />
-        </div>
-
-        <button (click)="downloadImage()">Download</button>
-
-        <div id="render-download">
-            <img #canvas>
-            <a #downloadLink></a>
-        </div>
     </div>
 </div>

@@ -18,6 +18,7 @@
         left: 0px;
     }
 
-#render-download {
-    display: none;
+.nav-tabs .nav-link.active {
+    background-color: #343a40;
+    color: white;
 }
