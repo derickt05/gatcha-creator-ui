@@ -30,9 +30,7 @@ export class ImageSelectorComponent implements OnInit {
 
   imageCropped(event: ImageCroppedEvent) {
       this.croppedImage = event.base64;
-
-      this.loadSources();
-      this.loadImages(() => this.drawCanvas());
+      this.triggerRender();
   }
 
   imageLoaded() {
@@ -46,44 +44,42 @@ export class ImageSelectorComponent implements OnInit {
   }
 
   loadSources() {
-    this.sources = [];
-    this.sources.push(this.currentTemplate['background_url']);
-    if (this.croppedImage !== '') {
-      this.sources.push(this.croppedImage);
-    }
-    this.sources.push(this.currentTemplate['template_url']);
+    this.sources = {};
     for (let [resource_key, resource] of Object.entries(this.currentTemplate['resources'])) {
-      //debbuger;
-      if (resource['type'] == 'image') {
-        this.sources.push(resource['asset']['uri']);
-      }
+      this.sources[resource_key] = resource;
+    }
+    if (this.croppedImage !== '' && this.sources['render']) {
+      this.sources['render']['asset']['uri'] = this.croppedImage;
     }
   }
 
   loadImages(callback: Function) {
-    this.images = [];
-    var loadedImages = 0;
-    var numImages = this.sources.length;
-    var currentImage = 0;
-    this.sources.forEach(source => {
-      this.images[currentImage] = new Image();
-      this.images[currentImage].onload = () => {
-        if(++loadedImages >= numImages) {
+    this.images = {};
+    var loadedSources = 0;
+    var numSources = Object.keys(this.sources).length;
+    for (let [resource_key, resource] of Object.entries(this.sources)) {
+      if (resource['type'] == 'image' && resource['asset']['uri']) {
+        this.images[resource_key] = new Image();
+        this.images[resource_key].onload = () => {
+          if(++loadedSources >= numSources) {
+            callback();
+          }
+        }
+        this.images[resource_key].src = resource['asset']['uri'];
+      } else {
+        if (++loadedSources >= numSources) {
           callback();
         }
       }
-      this.images[currentImage].src = source;
-      currentImage++;
-    });
+    };
   }
 
   drawCanvas () {
-    this.images.forEach(image => {
-      this.ctx.drawImage(image, 0, 0, this.currentTemplate['width'], this.currentTemplate['height'])
-    });
-    for (let [resource_key, resource] of Object.entries(this.currentTemplate['resources'])) {
-      //debbuger;
-      if (resource['type'] == 'text') {
+    var orderedSources = Object.entries(this.sources).sort((a, b) => a[1]['order'] - b[1]['order']);
+    for (let [resource_key, resource] of orderedSources) {
+      if (resource['type'] == 'image' && resource['asset']['uri']) {
+        this.ctx.drawImage(this.images[resource_key], resource['render_coordinates'][0], resource['render_coordinates'][1], resource['asset']['asset_coordinates'][2], resource['asset']['asset_coordinates'][3]);
+      } else {
         this.ctx.font = resource['asset']['font'];
         this.ctx.fillStyle = resource['asset']['fill_style'];
         this.ctx.fillText(this.currentTemplate['model'][resource_key], resource['render_coordinates'][0], resource['render_coordinates'][1]);

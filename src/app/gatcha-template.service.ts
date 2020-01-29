@@ -4,6 +4,7 @@ import { Injectable } from '@angular/core';
 // of an eventual template object with this json stored and fetched remote.
 // "resolveJsonModule": true in tsconfig.json due to this method.
 import the_end_schema from '../assets/template-schema/the-end-schema-form.json';
+import the_end_front_ui from '../assets/images/the-end/the-end-front-ui.json';
 
 @Injectable({
   providedIn: 'root'
@@ -13,59 +14,9 @@ export class GatchaTemplateService {
 
   // Mocked until templates are stored in database or file.
   returnTemplates() {
-    console.log(the_end_schema);
     return {
-      /* 
-      heroes: {
-        title: 'Heroes',
-        template_url: './assets/images/feh_template.png',
-        background_url: './assets/images/feh_background.png',
-        aspect_ratio: "9 / 16",
-        width: "540",
-        height: "960",
-        schema: {
-          "properties": {
-            "name": {
-              "type": "string",
-              "description": "Name"
-            },
-            "title": {
-              "type": "string",
-              "description": "Title"
-            },
-            "rarity": {
-              "type": "string",
-              "description": "Rarity",
-              "widget": "select",
-              "oneOf": [
-                { "enum": ["three_star"], "description": "3-Star",},
-                { "enum": ["four_star"],  "description": "4-Star",},
-                { "enum": ["five_star"],  "description": "5-Star"}
-              ]
-            }
-          }
-        },
-        model: {
-          "name": "Veiled Figure",
-          "title": "The Chosen Hero",
-          "rarity": "four_star"
-        }
-      },
-      */
-      /*
-      live: {
-        title: 'Live!',
-        template_url: './assets/images/ur_blue_template.png',
-        background_url: './assets/images/gatcha_background.jpg',
-        aspect_ratio: ".71 / 1",
-        width: "540",
-        height: "758"
-      },
-      */
       the_end: {
         title: 'The End',
-        template_url: './assets/images/gradius_template.png',
-        background_url: './assets/images/apoc_background.jpg',
         aspect_ratio: "9 / 16",
         width: "540",
         height: "960",
@@ -79,6 +30,32 @@ export class GatchaTemplateService {
         },
         /* Match the key of the schema */
         resources: {
+          background: {
+            type: "image",
+            asset: {
+              uri: './assets/images/the-end/apoc_background.jpg',
+              asset_coordinates: [0, 0, 540, 960]
+            },
+            render_coordinates: [0, 0],
+            order: 0
+          },
+          template: {
+            type: "image",
+            asset: {
+              uri: './assets/images/the-end/gradius_template.png',
+              asset_coordinates: [0, 0, 540, 960]
+            },
+            render_coordinates: [0, 0],
+            order: 2
+          },
+          render: {
+            type: "image",
+            asset: {
+              asset_coordinates: [0, 0, 540, 960]
+            },
+            render_coordinates: [0, 0],
+            order: 1
+          },
           name: {
             type: "text",
             asset: {
@@ -86,24 +63,27 @@ export class GatchaTemplateService {
               fill_style: "#FFFFFF"
               /* And more... apply to ctx */
             },
-            render_coordinates: [15, 800]
+            render_coordinates: [15, 800],
+            order: 3
           },
           title: {
             type: "text",
             asset: {
               font: "italic bold 20px arial,serif",
               fill_style: "#FFFFFF"
-            /* And more... apply to ctx */
             },
-            render_coordinates: [50, 830]
+            render_coordinates: [50, 830],
+            order: 4
           },
           rarity: {
             type: "image",
             asset: {
-              uri: './assets/images/bronze_star.png',
-              packer: [0, 0, 50, 50]
+              uri: './assets/images/the-end/gold_star.png',
+              /* Resize all templates for now, then implement scaling */
+              asset_coordinates: [0, 0, (200 * (3/4)) , (49 * (3/4))]
             },
-            render_coordinates: [50, 830, 50, 50]
+            render_coordinates: [390, 785],
+            order: 5
           }
         }
       }
