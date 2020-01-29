@@ -16,11 +16,7 @@
           { "enum": ["three_star"], "description": "3-Star"},
           { "enum": ["four_star"],  "description": "4-Star"},
           { "enum": ["five_star"],  "description": "5-Star"}
-        ],
-        "resource": {
-          "asset": "./assets/images/bronze_star.png",
-          "packed": true
-        }
+        ]
       }
     }
   }

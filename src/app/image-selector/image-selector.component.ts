@@ -52,6 +52,12 @@ export class ImageSelectorComponent implements OnInit {
       this.sources.push(this.croppedImage);
     }
     this.sources.push(this.currentTemplate['template_url']);
+    for (let [resource_key, resource] of Object.entries(this.currentTemplate['resources'])) {
+      //debbuger;
+      if (resource['type'] == 'image') {
+        this.sources.push(resource['asset']['uri']);
+      }
+    }
   }
 
   loadImages(callback: Function) {
@@ -74,16 +80,15 @@ export class ImageSelectorComponent implements OnInit {
   drawCanvas () {
     this.images.forEach(image => {
       this.ctx.drawImage(image, 0, 0, this.currentTemplate['width'], this.currentTemplate['height'])
-      this.ctx.font = "30px Helvetica";
-      this.ctx.fillStyle = "#FFFFFF";
-      if (this.currentTemplate['title'] == 'Heroes') {
-        this.ctx.fillText(this.currentTemplate['model']['name'], 25, 450);
-        this.ctx.fillText(this.currentTemplate['model']['title'], 50, 505);
-      } else {
-        this.ctx.fillText(this.currentTemplate['model']['name'], 15, 800);
-        this.ctx.fillText(this.currentTemplate['model']['title'], 50, 830);
-      }
     });
+    for (let [resource_key, resource] of Object.entries(this.currentTemplate['resources'])) {
+      //debbuger;
+      if (resource['type'] == 'text') {
+        this.ctx.font = resource['asset']['font'];
+        this.ctx.fillStyle = resource['asset']['fill_style'];
+        this.ctx.fillText(this.currentTemplate['model'][resource_key], resource['render_coordinates'][0], resource['render_coordinates'][1]);
+      }
+    }
   }
 
   triggerRender() {

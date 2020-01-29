@@ -15,6 +15,7 @@ export class GatchaTemplateService {
   returnTemplates() {
     console.log(the_end_schema);
     return {
+      /* 
       heroes: {
         title: 'Heroes',
         template_url: './assets/images/feh_template.png',
@@ -50,6 +51,7 @@ export class GatchaTemplateService {
           "rarity": "four_star"
         }
       },
+      */
       /*
       live: {
         title: 'Live!',
@@ -74,6 +76,35 @@ export class GatchaTemplateService {
           "name": "Veiled Figure",
           "title": "The Chosen Hero",
           "rarity": "three_star"
+        },
+        /* Match the key of the schema */
+        resources: {
+          name: {
+            type: "text",
+            asset: {
+              font: "30px Helvetica",
+              fill_style: "#FFFFFF"
+              /* And more... apply to ctx */
+            },
+            render_coordinates: [15, 800]
+          },
+          title: {
+            type: "text",
+            asset: {
+              font: "italic bold 20px arial,serif",
+              fill_style: "#FFFFFF"
+            /* And more... apply to ctx */
+            },
+            render_coordinates: [50, 830]
+          },
+          rarity: {
+            type: "image",
+            asset: {
+              uri: './assets/images/bronze_star.png',
+              packer: [0, 0, 50, 50]
+            },
+            render_coordinates: [50, 830, 50, 50]
+          }
         }
       }
     }
