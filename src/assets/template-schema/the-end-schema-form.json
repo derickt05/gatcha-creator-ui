@@ -13,9 +13,19 @@
         "description": "Rarity",
         "widget": "select",
         "oneOf": [
-          { "enum": ["three_star"], "description": "3-Star"},
-          { "enum": ["four_star"],  "description": "4-Star"},
-          { "enum": ["five_star"],  "description": "5-Star"}
+          { "enum": ["bronze_star.png"], "description": "3-Star"},
+          { "enum": ["silver_star.png"],  "description": "4-Star"},
+          { "enum": ["gold_star.png"],  "description": "5-Star"}
+        ]
+      },
+      "faction": {
+        "type": "string",
+        "description": "Faction",
+        "widget": "select",
+        "oneOf": [
+          { "enum": ["gradius.png"], "description": "Gradius"},
+          { "enum": ["malheureux.png"],  "description": "Malheureux"},
+          { "enum": ["global_purity.png"],  "description": "Global Purity"}
         ]
       }
     }

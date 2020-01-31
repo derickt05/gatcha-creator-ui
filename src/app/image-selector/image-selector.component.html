@@ -4,6 +4,7 @@
             width and height set inline to prevent blurring canvas behavior
             https://stackoverflow.com/questions/17854336/html-blurry-canvas-images/17854337#17854337
         -->
+        <!-- TODO: Decide the canvas size based on 'maximum vs template's width' and then update canvasScale-->
         <canvas #heroCanvas [width]="currentTemplate['width']" [height]="currentTemplate['height']">
         </canvas>
     </div>

@@ -20,10 +20,30 @@
 				"h": 49
 			}
 		},
-		"gold_star.png": {
+		"global_purity.png": {
 			"frame": {
 				"x": 1,
 				"y": 52,
+				"w": 122,
+				"h": 122
+			},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": 122,
+				"h": 122
+			},
+			"sourceSize": {
+				"w": 122,
+				"h": 122
+			}
+		},
+		"gold_star.png": {
+			"frame": {
+				"x": 1,
+				"y": 176,
 				"w": 200,
 				"h": 49
 			},
@@ -40,10 +60,50 @@
 				"h": 49
 			}
 		},
+		"gradius.png": {
+			"frame": {
+				"x": 125,
+				"y": 52,
+				"w": 122,
+				"h": 122
+			},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": 122,
+				"h": 122
+			},
+			"sourceSize": {
+				"w": 122,
+				"h": 122
+			}
+		},
+		"malheureux.png": {
+			"frame": {
+				"x": 249,
+				"y": 1,
+				"w": 122,
+				"h": 122
+			},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": 122,
+				"h": 122
+			},
+			"sourceSize": {
+				"w": 122,
+				"h": 122
+			}
+		},
 		"silver_star.png": {
 			"frame": {
 				"x": 1,
-				"y": 103,
+				"y": 227,
 				"w": 200,
 				"h": 49
 			},
@@ -67,8 +127,8 @@
 		"image": "spritesheet.png",
 		"format": "RGBA8888",
 		"size": {
-			"w": 202,
-			"h": 153
+			"w": 372,
+			"h": 277
 		},
 		"scale": "1"
 	}

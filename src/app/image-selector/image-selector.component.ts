@@ -15,6 +15,8 @@ export class ImageSelectorComponent implements OnInit {
   sources: any;
   images: any;
   ctx: CanvasRenderingContext2D;
+  // Ratio of canvas render size to
+  canvasScale: number;
 
   // Custom ViewChildren
   @ViewChild('heroCanvas', {static: false}) heroCanvas: ElementRef;
@@ -78,7 +80,8 @@ export class ImageSelectorComponent implements OnInit {
     var orderedSources = Object.entries(this.sources).sort((a, b) => a[1]['order'] - b[1]['order']);
     for (let [resource_key, resource] of orderedSources) {
       if (resource['type'] == 'image' && resource['asset']['uri']) {
-        this.ctx.drawImage(this.images[resource_key], resource['render_coordinates'][0], resource['render_coordinates'][1], resource['asset']['asset_coordinates'][2], resource['asset']['asset_coordinates'][3]);
+        // TODO: Pass this the model's resource_key looked up.
+        this.drawImageResource(this.images[resource_key], resource, resource_key);
       } else {
         this.ctx.font = resource['asset']['font'];
         this.ctx.fillStyle = resource['asset']['fill_style'];
@@ -87,7 +90,33 @@ export class ImageSelectorComponent implements OnInit {
     }
   }
 
+  drawImageResource(image, resource, resource_key, scale = 1) {
+    var dx = resource['render_coordinates'][0];
+    var dy = resource['render_coordinates'][1];
+    var sx, sy, sWidth, sHeight, dWidth, dHeight;
+    if (resource['asset']['asset_coordinates']) {
+      // TODO: Refactor coords into the if and the rest out.
+      var coords = resource['asset']['asset_coordinates'];
+      sx = coords['sx'];
+      sy = coords['sy'];
+      sWidth = coords['sWidth'];
+      sHeight = coords['sHeight'];
+    } else if (resource['asset']['asset_pack']) {
+      var coords = resource['asset']['asset_pack']['coordinate_json'];
+      // TODO: Uuuuh what if the model doesn't have a default? Need to enforce this or fail gracefully.
+      var entity_name = this.currentTemplate['model'][resource_key];
+      sx = coords['frames'][entity_name]['frame']['x'];
+      sy = coords['frames'][entity_name]['frame']['y'];
+      sWidth = coords['frames'][entity_name]['frame']['w'];
+      sHeight = coords['frames'][entity_name]['frame']['h'];
+    }
+    dWidth = sWidth * this.canvasScale;
+    dHeight = sHeight * this.canvasScale;
+    this.ctx.drawImage(image, sx, sy, sWidth, sHeight, dy, dx, dWidth, dHeight);
+  }
+
   triggerRender() {
+    console.log('triggered');
     this.loadSources();
     this.loadImages(() => this.drawCanvas());
   }
@@ -107,6 +136,9 @@ export class ImageSelectorComponent implements OnInit {
   ngOnInit() {
     this.availableTemplates = this._gatchaTemplateService.returnTemplates();
     this.currentTemplate = this.availableTemplates['the_end'];
+    // TODO: Hard coded for The End template for now.
+    // Create a method to compute difference of background to canvas size.
+    this.canvasScale = .75;
   }
 
   ngAfterViewInit() {
