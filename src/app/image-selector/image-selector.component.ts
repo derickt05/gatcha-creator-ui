@@ -15,6 +15,8 @@ export class ImageSelectorComponent implements OnInit {
   sources: any;
   images: any;
   ctx: CanvasRenderingContext2D;
+  // Ratio of canvas render size to
+  canvasScale: number;
 
   // Custom ViewChildren
   @ViewChild('heroCanvas', {static: false}) heroCanvas: ElementRef;
@@ -30,9 +32,7 @@ export class ImageSelectorComponent implements OnInit {
 
   imageCropped(event: ImageCroppedEvent) {
       this.croppedImage = event.base64;
-
-      this.loadSources();
-      this.loadImages(() => this.drawCanvas());
+      this.triggerRender();
   }
 
   imageLoaded() {
@@ -46,47 +46,77 @@ export class ImageSelectorComponent implements OnInit {
   }
 
   loadSources() {
-    this.sources = [];
-    this.sources.push(this.currentTemplate['background_url']);
-    if (this.croppedImage !== '') {
-      this.sources.push(this.croppedImage);
+    this.sources = {};
+    for (let [resource_key, resource] of Object.entries(this.currentTemplate['resources'])) {
+      this.sources[resource_key] = resource;
     }
-    this.sources.push(this.currentTemplate['template_url']);
+    if (this.croppedImage !== '' && this.sources['render']) {
+      this.sources['render']['asset']['uri'] = this.croppedImage;
+    }
   }
 
   loadImages(callback: Function) {
-    this.images = [];
-    var loadedImages = 0;
-    var numImages = this.sources.length;
-    var currentImage = 0;
-    this.sources.forEach(source => {
-      this.images[currentImage] = new Image();
-      this.images[currentImage].onload = () => {
-        if(++loadedImages >= numImages) {
+    this.images = {};
+    var loadedSources = 0;
+    var numSources = Object.keys(this.sources).length;
+    for (let [resource_key, resource] of Object.entries(this.sources)) {
+      if (resource['type'] == 'image' && resource['asset']['uri']) {
+        this.images[resource_key] = new Image();
+        this.images[resource_key].onload = () => {
+          if(++loadedSources >= numSources) {
+            callback();
+          }
+        }
+        this.images[resource_key].src = resource['asset']['uri'];
+      } else {
+        if (++loadedSources >= numSources) {
           callback();
         }
       }
-      this.images[currentImage].src = source;
-      currentImage++;
-    });
+    };
   }
 
   drawCanvas () {
-    this.images.forEach(image => {
-      this.ctx.drawImage(image, 0, 0, this.currentTemplate['width'], this.currentTemplate['height'])
-      this.ctx.font = "30px Helvetica";
-      this.ctx.fillStyle = "#FFFFFF";
-      if (this.currentTemplate['title'] == 'Heroes') {
-        this.ctx.fillText(this.currentTemplate['model']['name'], 25, 450);
-        this.ctx.fillText(this.currentTemplate['model']['title'], 50, 505);
+    var orderedSources = Object.entries(this.sources).sort((a, b) => a[1]['order'] - b[1]['order']);
+    for (let [resource_key, resource] of orderedSources) {
+      if (resource['type'] == 'image' && resource['asset']['uri']) {
+        // TODO: Pass this the model's resource_key looked up.
+        this.drawImageResource(this.images[resource_key], resource, resource_key);
       } else {
-        this.ctx.fillText(this.currentTemplate['model']['name'], 15, 800);
-        this.ctx.fillText(this.currentTemplate['model']['title'], 50, 830);
+        this.ctx.font = resource['asset']['font'];
+        this.ctx.fillStyle = resource['asset']['fill_style'];
+        this.ctx.fillText(this.currentTemplate['model'][resource_key], resource['render_coordinates'][0], resource['render_coordinates'][1]);
       }
-    });
+    }
+  }
+
+  drawImageResource(image, resource, resource_key, scale = 1) {
+    var dx = resource['render_coordinates'][0];
+    var dy = resource['render_coordinates'][1];
+    var sx, sy, sWidth, sHeight, dWidth, dHeight;
+    if (resource['asset']['asset_coordinates']) {
+      // TODO: Refactor coords into the if and the rest out.
+      var coords = resource['asset']['asset_coordinates'];
+      sx = coords['sx'];
+      sy = coords['sy'];
+      sWidth = coords['sWidth'];
+      sHeight = coords['sHeight'];
+    } else if (resource['asset']['asset_pack']) {
+      var coords = resource['asset']['asset_pack']['coordinate_json'];
+      // TODO: Uuuuh what if the model doesn't have a default? Need to enforce this or fail gracefully.
+      var entity_name = this.currentTemplate['model'][resource_key];
+      sx = coords['frames'][entity_name]['frame']['x'];
+      sy = coords['frames'][entity_name]['frame']['y'];
+      sWidth = coords['frames'][entity_name]['frame']['w'];
+      sHeight = coords['frames'][entity_name]['frame']['h'];
+    }
+    dWidth = sWidth * this.canvasScale;
+    dHeight = sHeight * this.canvasScale;
+    this.ctx.drawImage(image, sx, sy, sWidth, sHeight, dy, dx, dWidth, dHeight);
   }
 
   triggerRender() {
+    console.log('triggered');
     this.loadSources();
     this.loadImages(() => this.drawCanvas());
   }
@@ -106,6 +136,9 @@ export class ImageSelectorComponent implements OnInit {
   ngOnInit() {
     this.availableTemplates = this._gatchaTemplateService.returnTemplates();
     this.currentTemplate = this.availableTemplates['the_end'];
+    // TODO: Hard coded for The End template for now.
+    // Create a method to compute difference of background to canvas size.
+    this.canvasScale = .75;
   }
 
   ngAfterViewInit() {
