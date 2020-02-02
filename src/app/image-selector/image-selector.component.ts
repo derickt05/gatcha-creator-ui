@@ -85,38 +85,27 @@ export class ImageSelectorComponent implements OnInit {
       } else {
         this.ctx.font = resource['asset']['font'];
         this.ctx.fillStyle = resource['asset']['fill_style'];
-        this.ctx.fillText(this.currentTemplate['model'][resource_key], resource['render_coordinates'][0], resource['render_coordinates'][1]);
+        this.ctx.fillText(this.currentTemplate['model'][resource_key], resource['render_coordinates']['x'], resource['render_coordinates']['y']);
       }
     }
   }
 
-  drawImageResource(image, resource, resource_key, scale = 1) {
-    var dx = resource['render_coordinates'][0];
-    var dy = resource['render_coordinates'][1];
-    var sx, sy, sWidth, sHeight, dWidth, dHeight;
+  drawImageResource(image: HTMLImageElement, resource: Object, resource_key: string) {
+    let source_coords: Object;
     if (resource['asset']['asset_coordinates']) {
       // TODO: Refactor coords into the if and the rest out.
-      var coords = resource['asset']['asset_coordinates'];
-      sx = coords['sx'];
-      sy = coords['sy'];
-      sWidth = coords['sWidth'];
-      sHeight = coords['sHeight'];
+      source_coords = resource['asset']['asset_coordinates'];
     } else if (resource['asset']['asset_pack']) {
-      var coords = resource['asset']['asset_pack']['coordinate_json'];
       // TODO: Uuuuh what if the model doesn't have a default? Need to enforce this or fail gracefully.
-      var entity_name = this.currentTemplate['model'][resource_key];
-      sx = coords['frames'][entity_name]['frame']['x'];
-      sy = coords['frames'][entity_name]['frame']['y'];
-      sWidth = coords['frames'][entity_name]['frame']['w'];
-      sHeight = coords['frames'][entity_name]['frame']['h'];
+      let entity_name = this.currentTemplate['model'][resource_key];
+      source_coords = resource['asset']['asset_pack']['coordinate_json']['frames'][entity_name]['frame'];
     }
-    dWidth = sWidth * this.canvasScale;
-    dHeight = sHeight * this.canvasScale;
-    this.ctx.drawImage(image, sx, sy, sWidth, sHeight, dy, dx, dWidth, dHeight);
+    this.ctx.drawImage(image, source_coords['x'], source_coords['y'], source_coords['w'], source_coords['h'],
+      resource['render_coordinates']['x'], resource['render_coordinates']['y'],
+      source_coords['w'] * this.canvasScale, source_coords['h'] * this.canvasScale);
   }
 
   triggerRender() {
-    console.log('triggered');
     this.loadSources();
     this.loadImages(() => this.drawCanvas());
   }

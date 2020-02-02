@@ -43,14 +43,16 @@ export class GatchaTemplateService {
             asset: {
               uri: './assets/images/the-end/apoc_background.jpg',
               asset_coordinates: {
-                sx: 0,
-                sy: 0,
-                sWidth: 720,
-                sHeight: 1280
+                x: 0,
+                y: 0,
+                w: 720,
+                h: 1280
               }
             },
-            // TODO: Use convention of x/y naming like the asset for clarity/consistency.
-            render_coordinates: [0, 0],
+            render_coordinates: {
+              x: 0,
+              y: 0
+            },
             order: 0
           },
           template: {
@@ -58,26 +60,32 @@ export class GatchaTemplateService {
             asset: {
               uri: './assets/images/the-end/gradius_template.png',
               asset_coordinates: {
-                sx: 0,
-                sy: 0,
-                sWidth: 720,
-                sHeight: 1280
+                x: 0,
+                y: 0,
+                w: 720,
+                h: 1280
               }
             },
-            render_coordinates: [0, 0],
+            render_coordinates: {
+              x: 0,
+              y: 0
+            },
             order: 2
           },
           render: {
             type: "image",
             asset: {
               asset_coordinates: {
-                sx: 0,
-                sy: 0,
-                sWidth: 720,
-                sHeight: 1280
+                x: 0,
+                y: 0,
+                w: 720,
+                h: 1280
               }
             },
-            render_coordinates: [0, 0],
+            render_coordinates: {
+              x: 0,
+              y: 0
+            },
             order: 1
           },
           name: {
@@ -87,7 +95,10 @@ export class GatchaTemplateService {
               fill_style: "#FFFFFF"
               /* And more... apply to ctx */
             },
-            render_coordinates: [15, 800],
+            render_coordinates: {
+              x: 15,
+              y: 800
+            },
             order: 3
           },
           title: {
@@ -96,7 +107,10 @@ export class GatchaTemplateService {
               font: "italic bold 20px arial,serif",
               fill_style: "#FFFFFF"
             },
-            render_coordinates: [50, 830],
+            render_coordinates: {
+              x: 50,
+              y: 830
+            },
             order: 4
           },
           rarity: {
@@ -105,11 +119,12 @@ export class GatchaTemplateService {
               uri: './assets/images/the-end/the-end-front-ui.png',
               asset_pack: {
                 coordinate_json: the_end_front_ui,
-                // TODO: Have the model decide the entity name.
-                entity_name: 'bronze_star.png'
               }
             },
-            render_coordinates: [785, 390],
+            render_coordinates: {
+              x: 390,
+              y: 785
+            },
             order: 5
           },
           faction: {
@@ -118,11 +133,12 @@ export class GatchaTemplateService {
               uri: './assets/images/the-end/the-end-front-ui.png',
               asset_pack: {
                 coordinate_json: the_end_front_ui,
-                // TODO: Have the model decide the entity name.
-                entity_name: 'malheureux.png'
               }
             },
-            render_coordinates: [20, 20],
+            render_coordinates: {
+              x: 20,
+              y: 20
+            },
             order: 6
           }
         }
