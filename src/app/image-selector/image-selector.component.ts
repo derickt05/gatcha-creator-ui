@@ -1,6 +1,8 @@
-import { Component, OnInit, ElementRef, ViewChild, Input } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { ImageCroppedEvent } from 'ngx-image-cropper';
 import { GatchaTemplateService } from '../gatcha-template.service';
+import { CardTemplate } from '../models/card-template.model';
+import { CanvasAsset } from '../models/canvas-asset.model';
 
 @Component({
   selector: 'app-image-selector',
@@ -10,10 +12,10 @@ import { GatchaTemplateService } from '../gatcha-template.service';
 export class ImageSelectorComponent implements OnInit {
 
   // Custom Properties
-  availableTemplates: any;
-  currentTemplate: Object;
-  sources: any;
-  images: any;
+  availableTemplates: CardTemplate[];
+  currentTemplate: CardTemplate;
+  sources: Map<string, CanvasAsset>;
+  images: Map<string, HTMLImageElement>;
   ctx: CanvasRenderingContext2D;
   // Ratio of canvas render size to
   canvasScale: number;
@@ -46,28 +48,26 @@ export class ImageSelectorComponent implements OnInit {
   }
 
   loadSources() {
-    this.sources = {};
-    for (let [resource_key, resource] of Object.entries(this.currentTemplate['resources'])) {
-      this.sources[resource_key] = resource;
-    }
+    this.currentTemplate.card_assets.forEach(canvas_asset =>
+      this.sources[canvas_asset.name] = canvas_asset
+    );
     if (this.croppedImage !== '' && this.sources['render']) {
-      this.sources['render']['asset']['uri'] = this.croppedImage;
+      this.sources['render'].url = this.croppedImage;
     }
   }
 
   loadImages(callback: Function) {
-    this.images = {};
     var loadedSources = 0;
     var numSources = Object.keys(this.sources).length;
     for (let [resource_key, resource] of Object.entries(this.sources)) {
-      if (resource['type'] == 'image' && resource['asset']['uri']) {
+      if (resource['type'] == 'image' && resource['url']) {
         this.images[resource_key] = new Image();
         this.images[resource_key].onload = () => {
           if(++loadedSources >= numSources) {
             callback();
           }
         }
-        this.images[resource_key].src = resource['asset']['uri'];
+        this.images[resource_key].src = resource['url'];
       } else {
         if (++loadedSources >= numSources) {
           callback();
@@ -77,41 +77,37 @@ export class ImageSelectorComponent implements OnInit {
   }
 
   drawCanvas () {
-    var orderedSources = Object.entries(this.sources).sort((a, b) => a[1]['order'] - b[1]['order']);
+    var orderedSources = Object.entries(this.sources).sort((a, b) => a[1]['render_layer'] - b[1]['render_layer']);
     for (let [resource_key, resource] of orderedSources) {
-      if (resource['type'] == 'image' && resource['asset']['uri']) {
+      if (resource['type'] == 'image' && resource['url']) {
         // TODO: Pass this the model's resource_key looked up.
         this.drawImageResource(this.images[resource_key], resource, resource_key);
       } else {
-        this.ctx.font = resource['asset']['font'];
-        this.ctx.fillStyle = resource['asset']['fill_style'];
-        this.ctx.fillText(this.currentTemplate['model'][resource_key], resource['render_coordinates']['x'], resource['render_coordinates']['y']);
+        this.ctx.font = resource['font'];
+        this.ctx.fillStyle = resource['fill_style'];
+        this.ctx.fillText(this.currentTemplate['model'][resource_key], resource['dx'], resource['dy']);
       }
     }
   }
 
-  drawImageResource(image: HTMLImageElement, resource: Object, resource_key: string) {
+  drawImageResource(image: HTMLImageElement, resource: CanvasAsset, resource_key: string) {
     let source_coords: Object;
-    if (resource['asset']['asset_coordinates']) {
-      // TODO: Refactor coords into the if and the rest out.
-      source_coords = resource['asset']['asset_coordinates'];
-    } else if (resource['asset']['asset_pack']) {
+    if (!resource.packed) {
+      source_coords = resource.getFrame();
+    } else if (resource.packed) {
       // TODO: Uuuuh what if the model doesn't have a default? Need to enforce this or fail gracefully.
       let entity_name = this.currentTemplate['model'][resource_key];
-      source_coords = resource['asset']['asset_pack']['coordinate_json']['frames'][entity_name]['frame'];
+      source_coords = resource.getFrame(entity_name);
     }
     this.ctx.drawImage(image, source_coords['x'], source_coords['y'], source_coords['w'], source_coords['h'],
-      resource['render_coordinates']['x'], resource['render_coordinates']['y'],
+      resource.dx, resource.dy,
       source_coords['w'] * this.canvasScale, source_coords['h'] * this.canvasScale);
   }
 
+  // TODO: Triggers a render every model load change.
   triggerRender() {
     this.loadSources();
     this.loadImages(() => this.drawCanvas());
-  }
-
-  downloadImage() {
-    alert('I removed html2canvas');
   }
 
   changeTemplate(key) {
@@ -124,7 +120,9 @@ export class ImageSelectorComponent implements OnInit {
 
   ngOnInit() {
     this.availableTemplates = this._gatchaTemplateService.returnTemplates();
-    this.currentTemplate = this.availableTemplates['the_end'];
+    this.currentTemplate = this.availableTemplates[0];
+    this.sources = new Map<string, CanvasAsset>();
+    this.images = new Map<string, HTMLImageElement>();
     // TODO: Hard coded for The End template for now.
     // Create a method to compute difference of background to canvas size.
     this.canvasScale = .75;
