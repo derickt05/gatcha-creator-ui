@@ -6,7 +6,6 @@ export class CardTemplate {
     public width: number;
     public height: number;
     public schema: any;
-    public model: Object;
     public card_assets: CanvasAsset[];
 
     constructor() {

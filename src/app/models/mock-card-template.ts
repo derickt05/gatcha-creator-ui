@@ -3,11 +3,13 @@ const the_end_schema = {
   "properties": {
     "name": {
       "type": "string",
-      "description": "Name"
+      "description": "Name",
+      "default": "Veiled Figure"
     },
     "title": {
       "type": "string",
-      "description": "Title"
+      "description": "Title",
+      "default": "The Chosen Hero"
     },
     "rarity": {
       "type": "string",
@@ -17,7 +19,8 @@ const the_end_schema = {
         { "enum": ["bronze_star.png"], "description": "3-Star"},
         { "enum": ["silver_star.png"],  "description": "4-Star"},
         { "enum": ["gold_star.png"],  "description": "5-Star"}
-      ]
+      ],
+      "default": "gold_star.png"
     },
     "faction": {
       "type": "string",
@@ -27,7 +30,8 @@ const the_end_schema = {
         { "enum": ["gradius.png"], "description": "Gradius"},
         { "enum": ["malheureux.png"],  "description": "Malheureux"},
         { "enum": ["global_purity.png"],  "description": "Global Purity"}
-      ]
+      ],
+      "default": "gradius.png"
     }
   }
 }
@@ -44,16 +48,6 @@ export const TEMPLATES: CardTemplate[] = [{
       Fetch the schema from .json for now.
       */
       schema: the_end_schema,
-      /* 
-      TODO: Need fetchModel method that resolves to a default with certainty.
-      Could do this by inspecting the resource's loaded JSON and selecting 'first'.
-      */
-      model: {
-        "name": "Veiled Figure",
-        "title": "The Chosen Hero",
-        "rarity": "silver_star.png",
-        "faction": "malheureux.png"
-      },
       /* Match the key of the schema */
       card_assets: [
         {

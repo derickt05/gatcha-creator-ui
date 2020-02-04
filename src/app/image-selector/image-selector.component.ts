@@ -14,10 +14,11 @@ export class ImageSelectorComponent implements OnInit {
   // Custom Properties
   availableTemplates: CardTemplate[];
   currentTemplate: CardTemplate;
+  currentModel: object;
   sources: Map<string, CanvasAsset>;
   images: Map<string, HTMLImageElement>;
   ctx: CanvasRenderingContext2D;
-  // Ratio of canvas render size to
+  // What to scale assets to.
   canvasScale: number;
 
   // Custom ViewChildren
@@ -49,8 +50,7 @@ export class ImageSelectorComponent implements OnInit {
 
   loadSources() {
     this.currentTemplate.card_assets.forEach(canvas_asset =>
-      this.sources[canvas_asset.name] = canvas_asset
-    );
+      this.sources[canvas_asset.name] = canvas_asset);
     if (this.croppedImage !== '' && this.sources['render']) {
       this.sources['render'].url = this.croppedImage;
     }
@@ -85,7 +85,7 @@ export class ImageSelectorComponent implements OnInit {
       } else {
         this.ctx.font = resource['font'];
         this.ctx.fillStyle = resource['fill_style'];
-        this.ctx.fillText(this.currentTemplate['model'][resource_key], resource['dx'], resource['dy']);
+        this.ctx.fillText(this.currentModel[resource_key], resource['dx'], resource['dy']);
       }
     }
   }
@@ -96,7 +96,7 @@ export class ImageSelectorComponent implements OnInit {
       source_coords = resource.getFrame();
     } else if (resource.packed) {
       // TODO: Uuuuh what if the model doesn't have a default? Need to enforce this or fail gracefully.
-      let entity_name = this.currentTemplate['model'][resource_key];
+      let entity_name = this.currentModel[resource_key];
       source_coords = resource.getFrame(entity_name);
     }
     this.ctx.drawImage(image, source_coords['x'], source_coords['y'], source_coords['w'], source_coords['h'],
@@ -104,13 +104,12 @@ export class ImageSelectorComponent implements OnInit {
       source_coords['w'] * this.canvasScale, source_coords['h'] * this.canvasScale);
   }
 
-  // TODO: Triggers a render every model load change.
   triggerRender() {
     this.loadSources();
     this.loadImages(() => this.drawCanvas());
   }
 
-  changeTemplate(key) {
+  changeTemplate(key: string) {
     this.currentTemplate = this.availableTemplates[key];
     this.triggerRender();
   }
@@ -123,6 +122,15 @@ export class ImageSelectorComponent implements OnInit {
     this.currentTemplate = this.availableTemplates[0];
     this.sources = new Map<string, CanvasAsset>();
     this.images = new Map<string, HTMLImageElement>();
+    this.currentModel = {};
+    // TODO: Formulate a 'loadModel' --> Lookup --> loadDefaults()
+    let defaults =
+      Object.entries(this.currentTemplate.schema.properties)
+        .reduce((def, pair) => {
+          def[pair[0]] = pair[1];
+          return def;
+        }, {});
+    Object.assign(this.currentModel, defaults);
     // TODO: Hard coded for The End template for now.
     // Create a method to compute difference of background to canvas size.
     this.canvasScale = .75;

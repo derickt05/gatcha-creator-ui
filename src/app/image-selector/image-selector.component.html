@@ -17,9 +17,9 @@
         <div class="card-body tab-content">
             <input type="file" (change)="fileChangeEvent($event)" />
             <!-- TODO: This caused triggerRender() to trigger initialization cycles, look into why so it only renders once -->
-            <sf-form [schema]="currentTemplate['schema']" [(model)]="currentTemplate['model']" (onChange)="triggerRender()"></sf-form>
+            <sf-form [schema]="currentTemplate['schema']" [(model)]="currentModel" (change)="triggerRender()"></sf-form>
             <p>Model Sanity Check</p>
-            <pre>{{currentTemplate['model']|json}}</pre>
+            <pre>{{currentModel|json}}</pre>
         </div>
     </div>
 </div>

@@ -1,32 +1,36 @@
 {
-    "properties": {
-      "name": {
-        "type": "string",
-        "description": "Name"
-      },
-      "title": {
-        "type": "string",
-        "description": "Title"
-      },
-      "rarity": {
-        "type": "string",
-        "description": "Rarity",
-        "widget": "select",
-        "oneOf": [
-          { "enum": ["bronze_star.png"], "description": "3-Star"},
-          { "enum": ["silver_star.png"],  "description": "4-Star"},
-          { "enum": ["gold_star.png"],  "description": "5-Star"}
-        ]
-      },
-      "faction": {
-        "type": "string",
-        "description": "Faction",
-        "widget": "select",
-        "oneOf": [
-          { "enum": ["gradius.png"], "description": "Gradius"},
-          { "enum": ["malheureux.png"],  "description": "Malheureux"},
-          { "enum": ["global_purity.png"],  "description": "Global Purity"}
-        ]
-      }
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Name",
+      "default": "Veiled Figure"
+    },
+    "title": {
+      "type": "string",
+      "description": "Title",
+      "default": "The Chosen Hero"
+    },
+    "rarity": {
+      "type": "string",
+      "description": "Rarity",
+      "widget": "select",
+      "oneOf": [
+        { "enum": ["bronze_star.png"], "description": "3-Star"},
+        { "enum": ["silver_star.png"],  "description": "4-Star"},
+        { "enum": ["gold_star.png"],  "description": "5-Star"}
+      ],
+      "default": "gold_star.png"
+    },
+    "faction": {
+      "type": "string",
+      "description": "Faction",
+      "widget": "select",
+      "oneOf": [
+        { "enum": ["gradius.png"], "description": "Gradius"},
+        { "enum": ["malheureux.png"],  "description": "Malheureux"},
+        { "enum": ["global_purity.png"],  "description": "Global Purity"}
+      ],
+      "default": "gradius.png"
     }
   }
+}
